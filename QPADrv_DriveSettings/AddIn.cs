@@ -48,7 +48,7 @@ namespace QPADrv_DriveSettings
             */
             _tiaportal = tiaportal;
             logForm = new LogForm();
-            WriteLog("Addin baslatildi");
+            WriteLog("Addin started");
         }
 
         public void ShowLogForm()
@@ -125,13 +125,38 @@ namespace QPADrv_DriveSettings
              *          displayed if a rightclick on the project name 
              *          will be performed in TIA Portal
             */
+
             addInRootSubmenu.Items.AddActionItem<DeviceItem>(
-                ("Export"), OnDoSomething, OnCanSomething);
+                "Export", OnExportSelected,
+                OnCanSomething);
             addInRootSubmenu.Items.AddActionItem<DeviceItem>(
-                ("Start Add-In"), OnDoSomething, OnCanSomething);
+                "Start Add-In", OnStartAddInSelected,
+                OnCanSomething);
             addInRootSubmenu.Items.AddActionItem<Project>(
                 "Not Available here", OnClickProject,
                 OnStatusUpdateProject);
+        }
+        private void OnExportSelected(MenuSelectionProvider<DeviceItem> menuSelectionProvider)
+        {
+            IEnumerable<DeviceItem> selection = menuSelectionProvider.GetSelection<DeviceItem>();
+            foreach (DeviceItem actDeviceItem in selection)
+            {
+                MainWindow myWindow = new MainWindow(actDeviceItem.Name);
+                myWindow.OpenExportPage(actDeviceItem.Name);  // Uses MainWindow's method
+                myWindow.ShowDialog(); // Shows the window with ExportPage loaded in the frame
+            }
+        }
+
+
+        private void OnStartAddInSelected(MenuSelectionProvider<DeviceItem> menuSelectionProvider)
+        {
+            IEnumerable<DeviceItem> selection = menuSelectionProvider.GetSelection<DeviceItem>();
+            foreach (DeviceItem actDeviceItem in selection)
+            {
+                MainWindow myWindow = new MainWindow(actDeviceItem.Name);
+                myWindow.NavigateToDriveList(actDeviceItem.Name, "Started");
+                myWindow.ShowDialog(); // Open new window
+            }
         }
 
         /// <summary>
@@ -158,7 +183,14 @@ namespace QPADrv_DriveSettings
             //change parameters for each selected drive in TIA Portal
             foreach (DeviceItem actDeviceItem in selection)
             {
-                ExportPage.OpenExportPage(actDeviceItem);
+
+                MainWindow exportWindow = new MainWindow(actDeviceItem.Name);
+                exportWindow.OpenExportPage(actDeviceItem.Name);
+                exportWindow.ShowDialog();
+
+                MainWindow driveListWindow = new MainWindow(_logText);
+                driveListWindow.ShowDialog();
+
                 /*
                  * get the SINAMICS DriveObject 
                  * S120, S120 Integrated, G120, G115D, G110M

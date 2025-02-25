@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
+using System.Windows.Controls;
 using ClosedXML.Excel;
 using Siemens.Engineering.HW;
+using System.Windows;
 
 namespace WPF
 {
-    public partial class ExportPage : Window
+    public partial class ExportPage : Page
     {
         private string _driveName;
+        private MainWindow _mainWindow;
         private Dictionary<string, bool> selectedData;
 
-        public ExportPage(string driveName)
+        public ExportPage(string driveName, MainWindow mainWindow)
         {
             InitializeComponent();
             _driveName = driveName;
+            _mainWindow = mainWindow;
             selectedData = new Dictionary<string, bool>
             {
                 {"ParameterData", false},
@@ -37,13 +40,12 @@ namespace WPF
 
             ExportToExcel();
             MessageBox.Show($"Data exported successfully for {_driveName}.", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
-            this.Close();
+            _mainWindow.NavigateToDriveList(_driveName, "Export completed.");
         }
 
         private void ExportToExcel()
         {
             string filePath = $"{_driveName}_Export_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-
             using (var workbook = new XLWorkbook())
             {
                 if (selectedData["ParameterData"])
@@ -75,29 +77,6 @@ namespace WPF
 
                 workbook.SaveAs(filePath);
             }
-        }
-
-        // -------- Integration Code in AddIn.cs --------
-        public static void OpenExportPage(DeviceItem selectedDrive)
-        {
-            string driveName = selectedDrive.Name;
-            ExportPage exportPage = new ExportPage(driveName);
-            exportPage.ShowDialog();
-        }
-
-        private void chkParameterData_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void chkTelegramData_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void chkAxisData_Checked(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }

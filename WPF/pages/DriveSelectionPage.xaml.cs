@@ -1,43 +1,36 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace TIA_Add_In_Project
+namespace WPF
 {
     public partial class DriveSelectionPage : Page
     {
-        public DriveSelectionPage()
+        private MainWindow mainWindow;
+        private string logText;
+
+        public DriveSelectionPage(MainWindow window, string logText)
         {
             InitializeComponent();
+            this.mainWindow = window;
+            this.logText = logText;
             CreateUI();
         }
 
         private void CreateUI()
         {
             StackPanel mainPanel = new StackPanel { Margin = new Thickness(20) };
-
-            TextBlock title = new TextBlock
-            {
-                Text = "Lütfen bir sürücü tipi seçin:",
-                FontSize = 18,
-                Margin = new Thickness(0, 0, 0, 10)
-            };
+            TextBlock title = new TextBlock { Text = "Please Select Drive Type:", FontSize = 18 };
             mainPanel.Children.Add(title);
 
-            RadioButton g120Radio = new RadioButton { Content = "G120", GroupName = "DriveGroup", Margin = new Thickness(0, 5, 0, 5) };
-            RadioButton s120VectorRadio = new RadioButton { Content = "S120 Vector", GroupName = "DriveGroup", Margin = new Thickness(0, 5, 0, 5) };
-            RadioButton s120ServoRadio = new RadioButton { Content = "S120 Servo", GroupName = "DriveGroup", Margin = new Thickness(0, 5, 0, 15) };
+            RadioButton g120Radio = new RadioButton { Content = "G120", GroupName = "DriveGroup" };
+            RadioButton s120VectorRadio = new RadioButton { Content = "S120 Vector", GroupName = "DriveGroup" };
+            RadioButton s120ServoRadio = new RadioButton { Content = "S120 Servo", GroupName = "DriveGroup" };
 
             mainPanel.Children.Add(g120Radio);
             mainPanel.Children.Add(s120VectorRadio);
             mainPanel.Children.Add(s120ServoRadio);
 
-            Button nextButton = new Button
-            {
-                Content = "Next",
-                Width = 100,
-                HorizontalAlignment = HorizontalAlignment.Right
-            };
+            Button nextButton = new Button { Content = "Next", Width = 100 };
             nextButton.Click += (s, e) =>
             {
                 string selectedDrive = g120Radio.IsChecked == true ? "G120" :
@@ -45,59 +38,12 @@ namespace TIA_Add_In_Project
                                        s120ServoRadio.IsChecked == true ? "S120 Servo" : null;
 
                 if (selectedDrive != null)
-                {
-                    NavigationService.Navigate(new DriveListPage(selectedDrive));
-                }
+                    mainWindow.NavigateToDriveList(selectedDrive, logText);
                 else
-                {
-                    MessageBox.Show("Lütfen bir seçenek belirleyin.");
-                }
+                    MessageBox.Show("Please Select At Least One Item.");
             };
-
             mainPanel.Children.Add(nextButton);
-            this.Content = mainPanel;
-        }
-    }
 
-    public partial class DriveListPage : Page
-    {
-        private string selectedDrive;
-
-        public DriveListPage(string driveType)
-        {
-            selectedDrive = driveType;
-            InitializeComponent();
-            CreateUI();
-        }
-
-        private void CreateUI()
-        {
-            StackPanel mainPanel = new StackPanel { Margin = new Thickness(20) };
-
-            TextBlock title = new TextBlock
-            {
-                Text = $"{selectedDrive} için sürücü listesi:",
-                FontSize = 18,
-                Margin = new Thickness(0, 0, 0, 10)
-            };
-            mainPanel.Children.Add(title);
-
-            ListView driveListView = new ListView { Height = 300 };
-            driveListView.Items.Add($"{selectedDrive} - Sürücü 1");
-            driveListView.Items.Add($"{selectedDrive} - Sürücü 2");
-            driveListView.Items.Add($"{selectedDrive} - Sürücü 3");
-
-            mainPanel.Children.Add(driveListView);
-
-            Button backButton = new Button
-            {
-                Content = "Back",
-                Width = 100,
-                HorizontalAlignment = HorizontalAlignment.Left
-            };
-            backButton.Click += (s, e) => NavigationService.GoBack();
-
-            mainPanel.Children.Add(backButton);
             this.Content = mainPanel;
         }
     }
