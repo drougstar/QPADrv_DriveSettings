@@ -21,6 +21,7 @@ namespace WPF.Pages
             _parameterPanel = new StackPanel { Margin = new Thickness(10) };
             _openParametersButton = new Button
             {
+                VerticalAlignment = VerticalAlignment.Bottom,
                 Content = "Open Parameters",
                 Height = 30,
                 Margin = new Thickness(10)
@@ -83,16 +84,3 @@ namespace WPF.Pages
         }
     }
 }
-
-
-// ============================
-// 🎯 Updates Implemented:
-// - Parameter Settings Page now includes 'Open Parameters' button.
-// - Displays dummy parameters based on selected drive type.
-// - Back button functionality will be implemented next.
-// ============================
-
-// ✅ Next Step:
-// - Test Open Parameters button functionality.
-// - Confirm parameters display correctly per drive type.
-// - Provide feedback for final adjustments before adding Back button and future Compare/Export features.
