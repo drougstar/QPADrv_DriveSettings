@@ -1,114 +1,84 @@
-﻿using System;
+﻿// ============================
+// STEP: Project Cleanup & Refactor
+// ============================
+
+using Siemens.Engineering.AddIn.Menu;
+using Siemens.Engineering.HW;
+using Siemens.Engineering;
+using System;
 using System.Windows;
-using System.Windows.Navigation;
-using System.Collections.Generic;
-using Siemens.Engineering.HW; // Needed namespace for DeviceItem
+using System.Windows.Controls;
+using WPF;
 
 namespace WPF
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// Checks Export and Start Add-In operations
+    /// MainWindow structure refactored to match new UI requirements.
+    /// Previous pages (DriveListPage, DriveSelectionPage) removed.
+    /// All new pages are located inside the 'Pages' folder.
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string _logText;
-
-        public MainWindow(string logText)
+        public MainWindow()
         {
             InitializeComponent();
-            _logText = logText;
-
-            if (frame != null)
-            {
-                frame.Content = new DriveSelectionPage(this, _logText);
-            }
-            else
-            {
-                throw new Exception("'frame' item should be match with x:Name for MainWindow.xaml.");
-            }
+            LoadMainPage();
         }
 
         /// <summary>
-        /// Used to open ExportPage.
+        /// Loads the main page with TreeView and buttons.
         /// </summary>
-        public void OpenExportPage(string deviceName)
+        private void LoadMainPage()
         {
-            ExportPage exportPage = new ExportPage(deviceName, this); // Main Window Referance added.
-            frame.Content = exportPage;
-        }
-
-
-        /// <summary>
-        /// Used to open DriveListPage
-        /// </summary>
-        public void NavigateToDriveList(string deviceName, string logText)
-        {
-            if (frame != null)
-            {
-                frame.Content = new DriveListPage(deviceName, this, logText); // Corrected as String for parameter type.
-            }
+            frame.Content = new Pages.MainPage(this); // MainPage now serves as the main landing page
         }
 
         /// <summary>
-        /// When started from TIA Portal, triggers Export or Drive List operation.
-        /// Corrected as String for parameter type.
+        /// Opens the Parameter Settings Page.s
         /// </summary>
-        public void HandleAddInAction(string actionType, string deviceName)
+        public void OpenParameterSettingsPage(string driveName, string driveType)
         {
-            if (string.Equals(actionType, "Export", StringComparison.OrdinalIgnoreCase))
-            {
-                OpenExportPage(deviceName);
-            }
-            else if (string.Equals(actionType, "Start Add-In", StringComparison.OrdinalIgnoreCase))
-            {
-                NavigateToDriveList(deviceName, _logText);
-            }
-            else
-            {
-                MessageBox.Show($"Unknown action: {actionType}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            frame.Content = new Pages.ParameterSettingsPage(this, driveName, driveType);
         }
 
-        public void closeWindow()
+        /// <summary>
+        /// Opens the Telegram Configuration Page (placeholder for future implementation).
+        /// </summary>
+        public void OpenTelegramConfigurationPage()
+        {
+            MessageBox.Show("Telegram Configuration Page - Coming Soon");
+        }
+
+        /// <summary>
+        /// Opens the Function Modules Page (placeholder for future implementation).
+        /// </summary>
+        public void OpenFunctionModulesPage()
+        {
+            MessageBox.Show("Function Modules Page - Coming Soon");
+        }
+
+        /// <summary>
+        /// Close the application.
+        /// </summary>
+        public void CloseApplication()
         {
             this.Close();
         }
 
         private void btnMinimizeScreen_Click(object sender, RoutedEventArgs e)
         {
-            this.frame?.Focus();
             this.WindowState = WindowState.Minimized;
         }
 
         private void btnMaximizeScreen_Click(object sender, RoutedEventArgs e)
         {
-            if (this.WindowState == WindowState.Normal)
-            {
-                this.WindowState = WindowState.Maximized;
-            }
-            else
-            {
-                this.WindowState = WindowState.Normal;
-            }
-            this.frame?.Focus();
+            this.WindowState = this.WindowState == WindowState.Normal ? WindowState.Maximized : WindowState.Normal;
         }
 
         private void btnCloseScreen_Click(object sender, RoutedEventArgs e)
         {
-            this.frame?.Focus();
-            closeWindow();
-        }
-
-        public void SetMyScrollViewerToTop()
-        {
-            myScrollviewer?.ScrollToHorizontalOffset(0);
-            myScrollviewer?.ScrollToVerticalOffset(0);
-        }
-
-        public void setTitle(string newTitle)
-        {
-            this.Title = newTitle;
+            CloseApplication();
         }
     }
 }
+

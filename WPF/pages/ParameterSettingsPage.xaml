@@ -1,0 +1,12 @@
+﻿<Page x:Class="WPF.Pages.ParameterSettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="ParameterSettingsPage">
+    <Grid>
+        <Label x:Name="lblStatus"
+            Content=""
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="16"/>
+    </Grid>
+</Page>

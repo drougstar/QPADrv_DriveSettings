@@ -40,7 +40,7 @@ namespace WPF
 
             ExportToExcel();
             MessageBox.Show($"Data exported successfully for {_driveName}.", "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
-            _mainWindow.NavigateToDriveList(_driveName, "Export completed.");
+            //_mainWindow.NavigateToDriveList(_driveName, "Export completed.");
         }
 
         private void ExportToExcel()

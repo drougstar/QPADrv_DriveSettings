@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AddIn.cs" />
     <Compile Include="AddInProvider.cs" />
+    <Compile Include="AddInController.cs" />
     <Compile Include="LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
